@@ -1,7 +1,7 @@
 JavaScripts
 ===========
 
-All my JavaScripts (well not reallly)
+All my JavaScripts for Photoshop (well not reallly)
 
 I currently have 1354 JSX files containing 34,214,724 bytes.
 
