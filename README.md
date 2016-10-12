@@ -1,17 +1,10 @@
 JavaScripts
 ===========
 
-All my JavaScripts for Photoshop (well not reallly)
+JavaScripts for Photoshop
 
-I currently have 1354 JSX files containing 34,214,724 bytes.
+I currently have 1354 JavaScript files and I will be adding them here after I clean them up.
 
-They are all not ready for public consumption.
+Most of my submissions will be regarding questions asked from the Adobe Scripting Forums.
 
-There are a lot of duplicates. (versioning by duplicating)
-
-There are a lot of them that I can't share because they are not mine.
-
-There are some that expose bugs in Photoshop for various versions that we have fixed.
-
-Some of them are interesting and some I use daily. Those are the ones I want to share.
-
+If I can figure out a script to answer the question.
