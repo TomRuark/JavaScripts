@@ -1,10 +1,10 @@
-﻿// Version: 2016.9.23
+﻿// Version: 2016.10.13
 
 // Close all documents except the one in the front.
 // This will pop the save dialog as necessary
 
 var c = documents.length;
-if ( c ) {
+if ( c > 1 ) {
     var d = activeDocument;
     c--;
     while ( c >= 0 ) {
