@@ -22,24 +22,23 @@ var totalTime = new Timer();
 var outputFile = new File(Folder.desktop + "/Getter_JSX.txt"); 
 outputFile.remove();
 
-// TODO: convert all of these to the string equivalents for easier reading
-// some runtime id's
-var classActionSet = app.charIDToTypeID('ASet');
-var classAction = app.charIDToTypeID('Actn');
-var classApplication = app.charIDToTypeID('capp');
-var classBackgroundLayer = app.charIDToTypeID('BckL');
-var classChannel = app.charIDToTypeID('Chnl');
-var classDocument = app.charIDToTypeID('Dcmn');
-var classHistoryState = app.charIDToTypeID('HstS');
-var classLayer = app.charIDToTypeID('Lyr ');
-var classPath = app.charIDToTypeID('Path');
-var classProperty = app.charIDToTypeID('Prpr');
-var enumTarget = app.charIDToTypeID('Trgt');
-var enumZoom = app.charIDToTypeID('Zm  ');
-var eventSet = app.charIDToTypeID( "setd" );
-var keyBackground = app.charIDToTypeID('Bckg');
+// some globals to make the code easier to read
+var classActionSet = app.stringIDToTypeID("actionSet");
+var classAction = app.stringIDToTypeID("action");
+var classApplication = app.stringIDToTypeID("application");
+var classBackgroundLayer = app.stringIDToTypeID("backgroundLayer");
+var classChannel = app.stringIDToTypeID("channel");
+var classDocument = app.stringIDToTypeID("document");
+var classHistoryState = app.stringIDToTypeID("historyState");
+var classLayer = app.stringIDToTypeID("layer");
+var classPath = app.stringIDToTypeID("path");
+var classProperty = app.stringIDToTypeID("property");
+var enumTarget = app.stringIDToTypeID("targetEnum");
+var enumZoom = app.stringIDToTypeID("zoom");
+var eventSet = app.stringIDToTypeID( "set" );
+var keyBackground = app.stringIDToTypeID("background");
 var keyCount = app.stringIDToTypeID("count");
-var keyTo = app.charIDToTypeID( 'T   ' );
+var keyTo = app.stringIDToTypeID( "to" );
 var kcachePrefs = app.stringIDToTypeID("cachePrefs");
 var kgeneratorEnabledStrID = app.stringIDToTypeID("generatorEnabled");
 var kgeneratorSettingsStrID = app.stringIDToTypeID("generatorSettings");
@@ -56,9 +55,9 @@ var kwriteBytesStrID = app.stringIDToTypeID("writeBytes");
 var kwriteMessagesStrID = app.stringIDToTypeID("writeMessages");
 var kwriteStatusStrID = app.stringIDToTypeID("writeStatus");
 var kzoomStr = app.stringIDToTypeID("zoom");
-var typeOrdinal = app.charIDToTypeID('Ordn');
-var typeNULL = app.charIDToTypeID('null');
-var unitPercent = app.charIDToTypeID('#Prc');
+var typeOrdinal = app.stringIDToTypeID("ordinal");
+var typeNULL = app.stringIDToTypeID("null");
+var unitPercent = app.stringIDToTypeID("percentUnit");
             
 
 
