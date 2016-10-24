@@ -1,5 +1,5 @@
-﻿// Version 2016.10.19
-// Git public version on 2016.10.19
+﻿// Version 2016.10.24
+// Git public version on 2016.10.24
 
 // Get all the keys and values from Photoshop
 
@@ -217,6 +217,20 @@ function GetLayerInfo(inOutArray, inFlatLayerCount, inLogFile) {
         var layerData = new Object();
         layerData.objectName = "Photoshop Layer";
         DescriptorToObject(layerData, desc);
+        var ref = new ActionReference();
+        ref.putProperty(classProperty, stringIDToTypeID("json"));
+        ref.putIndex(classLayer, i);
+        ref.putEnumerated(classDocument, typeOrdinal, enumTarget);
+        desc = executeActionGet(ref);
+        DescriptorToObject(layerData, desc);
+        var ref = new ActionReference();
+        ref.putProperty(classProperty, stringIDToTypeID("json"));
+        ref.putIndex(classLayer, i);
+        ref.putEnumerated(classDocument, typeOrdinal, enumTarget);
+        desc = executeActionGet(ref);
+        DescriptorToObject(layerData, desc);
+        layerData.json = eval("a = " + layerData.json);
+        layerData.transform = GetTransformInfo();
         ObjectToFile(layerData, inLogFile);
         inOutArray.push(layerData);
    }
@@ -542,6 +556,41 @@ function GetSmartObjectInfo() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Function: GetTransformInfo
+// Usage: Get information about the transform on the layer
+// Input: None
+// Return: ActionDescriptor of matrix on the layer if it exists
+///////////////////////////////////////////////////////////////////////////////
+function GetTransformInfo() {
+    var obj = {};
+    try {
+        var reference = new ActionReference();
+        reference.putProperty(stringIDToTypeID("property"), stringIDToTypeID("layerTransformation"));
+        reference.putEnumerated(stringIDToTypeID("layer"), stringIDToTypeID("ordinal"), stringIDToTypeID("targetEnum")); 
+        var desc = executeActionGet(reference);
+        if (desc.count == 1) {
+            // odd, we ask for key layerTransformation and get back key transform
+            var transformDesc = desc.getObjectValue(desc.getKey(0));
+            if (transformDesc.count == 6) {
+                obj.xx = transformDesc.getDouble(transformDesc.getKey(0));
+                obj.xy = transformDesc.getDouble(transformDesc.getKey(1));
+                obj.yx = transformDesc.getDouble(transformDesc.getKey(2));
+                obj.yy = transformDesc.getDouble(transformDesc.getKey(3));
+                obj.tx = transformDesc.getDouble(transformDesc.getKey(4));
+                obj.ty = transformDesc.getDouble(transformDesc.getKey(5));
+            } else {
+                obj.error = "ERROR: transform is not 6 items";
+            }
+        } else {
+            obj.error = "ERROR: not 1 item in descriptor";
+        }
+    } catch(e) {
+        obj.error = e.toString();
+    }
+    return obj;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Function: ObjectToFile
 // Usage: Dump out a JavaScript object to File
 // Input: JavaScript Object (o), current object to output
@@ -553,7 +602,7 @@ function GetSmartObjectInfo() {
 function ObjectToFile(o, f) {
     var returnValue = 0;
     if (f.open('a')) {
-        for (var i in o) { 
+        for (var i in o) {
             if ( ! f.writeln(i + " : " + o[i].toSource())) {
                 myLogging.LogIt("FAIL: Could not write: " + i + " : " + o[i].toSource());
                 returnValue++;
