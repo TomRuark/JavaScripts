@@ -1,4 +1,4 @@
-﻿// Version 2016.10.24
+﻿// Version 2019.3.9
 // Git public version on 2016.10.24
 
 // Get all the keys and values from Photoshop
@@ -8,7 +8,8 @@
 // as the target and look at the Getter_JSX.txt on your desktop for
 // the information.
 
-// Dumps application, document, layer, channel, path, history, actions and action sets
+// Dumps application, document, layer, channel, path, history, guides,
+// actions and action sets
 
 // Converts ActionDescriptor to JavaScript object
 
@@ -29,6 +30,7 @@ var classApplication = app.stringIDToTypeID("application");
 var classBackgroundLayer = app.stringIDToTypeID("backgroundLayer");
 var classChannel = app.stringIDToTypeID("channel");
 var classDocument = app.stringIDToTypeID("document");
+var classGuide = app.charIDToTypeID('Gd  ');
 var classHistoryState = app.stringIDToTypeID("historyState");
 var classLayer = app.stringIDToTypeID("layer");
 var classPath = app.stringIDToTypeID("path");
@@ -58,6 +60,7 @@ var kzoomStr = app.stringIDToTypeID("zoom");
 var typeOrdinal = app.stringIDToTypeID("ordinal");
 var typeNULL = app.stringIDToTypeID("null");
 var unitPercent = app.stringIDToTypeID("percentUnit");
+var knumberOfChildrenStrID = app.stringIDToTypeID("numberOfChildren");
             
 
 
@@ -109,6 +112,8 @@ for (var i = 0; i < documents.length; i++) {
     GetChannelInfo(docData.channels, docData.numberOfChannels, outputFile);
     docData.paths = new Array();
     GetPathInfo(docData.paths, docData.numberOfPaths, outputFile);
+    docData.guides = new Array();
+    GetGuideInfo(docData.guides, outputFile);
     docArray.push(docData);
 }
 
@@ -130,6 +135,8 @@ myLogging.LogIt("GetGeneratorPreference: " + GetGeneratorPreference());
 myLogging.LogIt("GetGeneratorStatus: " + GetGeneratorStatus());
 
 myLogging.LogIt("GetSmartObjectInfo: " + GetSmartObjectInfo());
+
+myLogging.LogIt("GetMenuBarInfo: " + GetMenuBarInfo());
 
 myLogging.LogIt("Script Time: " + totalTime.getElapsed());
 
@@ -166,6 +173,35 @@ function GetBackgroundInfo(inOutArray, inLogFile) {
    }
    catch(e) {
        ; // current document might not have a background or no document open
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Function: GetGuideInfo
+// Usage: Get all info about the guides in the current document
+// Input: JavaScript Array (inOutArray), current Array of guides found
+//        JavaScript File (inLogFile), file to append to information to
+// Return: Nothing, inOutArray is updated and log file is appended
+///////////////////////////////////////////////////////////////////////////////
+function GetGuideInfo(inOutArray, inLogFile) {
+    try {
+        var guideCount = 1;
+        var guideIndex = 1;
+        while (guideIndex <= guideCount) {
+            var ref = new ActionReference();
+            ref.putIndex(classGuide, guideIndex);
+            desc = executeActionGet(ref);
+            var guideData = new Object();
+            guideData.objectName = "Photoshop Guide Info";
+            DescriptorToObject(guideData, desc);
+            ObjectToFile(guideData, inLogFile);
+            inOutArray.push(guideData);
+            guideCount = guideData.count;
+            guideIndex++;
+        }
+   }
+   catch(e) {
+       ; // current document might not have guides or no document open
    }
 }
 
@@ -298,8 +334,8 @@ function GetActionInfo(inOutArray, inLogFile) {
             ref.putIndex(classActionSet, setCounter);
             desc = executeActionGet(ref);
             var actionSetCount = 0;
-            if (desc.hasKey(keyCount))
-                actionSetCount = desc.getInteger(keyCount);
+            if (desc.hasKey(knumberOfChildrenStrID))
+                actionSetCount = desc.getInteger(knumberOfChildrenStrID);
             
             var actionSetInfo = new Object();
             actionSetInfo.objectName = "Photoshop Action Set";
@@ -410,6 +446,30 @@ function GetGPUEnabled() {
         myLogging.LogIt("FAIL: gpuEnabled != anObj.cachePrefs.openglEnabled " + gpuEnabled + " : " + anObj.cachePrefs.openglEnabled);
     }
     return gpuEnabled;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Function: GetMenuBarInfo
+// Usage: Get all the info about the menu bar
+// Input: None
+// Return: menu bar info as Object
+///////////////////////////////////////////////////////////////////////////////
+function GetMenuBarInfo() {
+    var anObj = new Object();
+    try {
+        var kMenuBarInfoID = stringIDToTypeID("menuBarInfo");
+        var ref = new ActionReference();
+        ref.putProperty(classProperty, kMenuBarInfoID);
+        ref.putEnumerated(classApplication, typeOrdinal, enumTarget);
+        var desc = executeActionGet(ref);
+        if (desc.hasKey(kMenuBarInfoID)) {
+            var menuDesc = desc.getObjectValue(kMenuBarInfoID);
+            DescriptorToObject(anObj, menuDesc);
+        }
+    } catch( e ) {
+       ; // no menu bar info for this application
+   }
+   return anObj.toSource();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
